@@ -36,7 +36,7 @@ export const NAV_SECTIONS: NavSection[] = [
   {
     eyebrow: "Connect",
     links: [
-      { label: "X (Twitter)", href: "https://x.com/" },
+      { label: "X (Twitter)", href: "https://x.com/droppolabs" },
       { label: "Discord", href: "https://discord.gg/hRuc4W4jD" },
     ],
   },
@@ -49,7 +49,7 @@ export interface Social {
 }
 
 export const SOCIALS: Social[] = [
-  { name: "X (Twitter)", href: "https://x.com/", icon: "x" },
+  { name: "X (Twitter)", href: "https://x.com/droppolabs", icon: "x" },
   { name: "Discord", href: "https://discord.gg/hRuc4W4jD", icon: "discord" },
   { name: "LinkedIn", href: "https://linkedin.com/", icon: "linkedin" },
 ];

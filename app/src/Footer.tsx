@@ -11,7 +11,7 @@ const LAB_LINKS = [
 ];
 
 const COMMUNITY_LINKS = [
-  { label: "Twitter", href: "https://x.com/" },
+  { label: "Twitter", href: "https://x.com/droppolabs" },
   { label: "Mail", href: `mailto:${SITE.email}` },
   { label: "Discord", href: "https://discord.gg/hRuc4W4jD" },
   { label: "LinkedIn", href: "https://linkedin.com/" },

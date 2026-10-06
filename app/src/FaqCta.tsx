@@ -5,7 +5,7 @@ import { TealWaves } from "./Hero";
 import { DiscordIcon, MailIcon, XIcon } from "./icons";
 
 const CTA_SOCIALS = [
-  { label: "X (Twitter)", href: "https://x.com/", Icon: XIcon, tilt: "rotate-3" },
+  { label: "X (Twitter)", href: "https://x.com/droppolabs", Icon: XIcon, tilt: "rotate-3" },
   { label: "Discord", href: "https://discord.gg/hRuc4W4jD", Icon: DiscordIcon, tilt: "-rotate-3" },
   { label: "Email", href: `mailto:${SITE.email}`, Icon: MailIcon, tilt: "rotate-6" },
 ];
