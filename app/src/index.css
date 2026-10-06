@@ -1,0 +1,175 @@
+@import "tailwindcss";
+
+@theme {
+  /* ---- Base surfaces (match the hero file: black-based, grain does the work) ---- */
+  --color-ash-950: #000000;
+  --color-ash-900: #000000;
+  --color-ash-850: #0a0a0a;
+  --color-ash-800: #050505;
+  --color-ash-700: #242424;
+  --color-ash-600: #313030;
+  --color-ash-500: #404040;
+  --color-ash-200: #737373;
+  --color-paper: #f6f7f5;
+
+  /* ---- Blue ramp (§2.2) ---- */
+  --color-flow-hi: #03a7ff;
+  --color-flow-deep: #001d66;
+  --color-flow-navy: #061a4b;
+  --color-flow-navy2: #0d2257;
+  --color-ice: #7fd4ff;
+  --color-steel: #4e82c8;
+
+  /* ---- Fonts (§3) ---- */
+  --font-sans: "Geist", ui-sans-serif, system-ui, -apple-system, "Segoe UI",
+    sans-serif;
+  --font-mono: "Geist Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+
+  /* ---- Easings (§4.3) ---- */
+  --ease-snap: cubic-bezier(0.2, 0.7, 0.2, 1);
+  --ease-nav: cubic-bezier(0.625, 0.05, 0, 1);
+
+  /* ---- Ambient animation tokens (§1.4) ---- */
+  --animate-drift-a: drift-a 22s ease-in-out infinite alternate;
+  --animate-drift-b: drift-b 29s ease-in-out infinite alternate;
+  --animate-flows-in: flows-in 1.8s cubic-bezier(0.2, 0.7, 0.2, 1) 0.1s forwards;
+  --animate-marquee: marquee 48s linear infinite;
+  --animate-rise: rise 0.8s cubic-bezier(0.2, 0.7, 0.2, 1) forwards;
+  --animate-wave-bob: wave-bob 6s ease-in-out infinite;
+}
+
+/* Keyframes at global scope so they always exist — including `rise`,
+   which the hero copy uses via plain CSS animation (not the utility). */
+@keyframes drift-a {
+  from { transform: translate3d(0, 0, 0) scale(1); }
+  to { transform: translate3d(-24px, -18px, 0) scale(1.03); }
+}
+@keyframes drift-b {
+  from { transform: translate3d(0, 0, 0) scale(1); }
+  to { transform: translate3d(18px, 14px, 0) scale(1.04); }
+}
+@keyframes flows-in {
+  from { opacity: 0; transform: translateY(40px); }
+  to { opacity: 1; transform: none; }
+}
+@keyframes rise {
+  from { opacity: 0; transform: translateY(14px); }
+  to { opacity: 1; transform: none; }
+}
+@keyframes marquee {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+
+/* Wavy ticker: each card rides a full sine cycle, phased by index so the
+   row travels as a wave. The phase step divides the duplicated set (6 cards
+   per loop half) so the -50% loop seam is invisible. */
+@keyframes wave-bob {
+  0% { transform: translateY(-26px); }
+  50% { transform: translateY(26px); }
+  100% { transform: translateY(-26px); }
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background: var(--color-ash-900);
+  color: var(--color-paper);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  overflow-x: clip;
+}
+
+::selection {
+  background: var(--color-flow-hi);
+  color: var(--color-ash-900);
+}
+
+/* ---- Footer giant wordmark (display caps, cropped at the edge) ---- */
+.footer-giant {
+  font-family: "Bebas Neue", "Arial Narrow", sans-serif;
+  font-size: clamp(90px, 15vw, 210px);
+  line-height: 0.85;
+  letter-spacing: 0.01em;
+  color: rgba(255, 255, 255, 0.92);
+  white-space: nowrap;
+}
+
+/* ---- CTA teal waves (same field as the hero, fixed — no motion) ---- */
+.cta-waves {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  opacity: 1;
+}
+.cta-waves .drift-a,
+.cta-waves .drift-b {
+  animation: none;
+}
+
+/* ---- Page grain (matches the hero file's noisy gray) ---- */
+.grain {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  opacity: 0.32;
+  mix-blend-mode: normal;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='220' height='220'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0 0 0 .9 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+}
+
+/* ---- Scroll reveal (§5A): JS adds .in via IntersectionObserver ----
+   No-JS parity: hidden state only applies when .js is present (added by hooks).
+   Without JS, .reveal renders at rest — never invisible. */
+.reveal {
+  opacity: 1;
+  transform: none;
+}
+.js .reveal {
+  opacity: 0;
+  transform: translateY(20px);
+  transition:
+    opacity 0.6s cubic-bezier(0.625, 0.05, 0, 1),
+    transform 0.6s cubic-bezier(0.625, 0.05, 0, 1);
+}
+.js .reveal.in,
+.js .reveal[data-visible="1"] {
+  opacity: 1;
+  transform: none;
+}
+
+/* marquee pause on hover */
+.marquee-track:hover {
+  animation-play-state: paused;
+}
+.marquee-track:hover .marquee-card {
+  animation-play-state: paused;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .reveal {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+  .animate-drift-a,
+  .animate-drift-b,
+  .animate-marquee,
+  .animate-flows-in,
+  .animate-rise,
+  .animate-wave-bob,
+  .cta-waves,
+  .cta-waves .drift-a,
+  .cta-waves .drift-b {
+    animation: none !important;
+  }
+  .cta-waves {
+    opacity: 1;
+  }
+}

@@ -1,0 +1,314 @@
+/* Transplant of C:\Users\Admin\Downloads\hero.html — verbatim, except:
+ * - the pill nav + sheet live in Navbar.tsx (two-step nav), not here
+ * - the `*` reset / html / body rules are dropped (Tailwind preflight covers
+ *   them) and the Bricolage font is scoped to .hero so the rest of the site
+ *   keeps Geist.
+ * Everything else (positions, timings, colours, copy layout) is untouched.
+ * Bricolage Grotesque loads via the <link> in index.html. */
+.hero-legacy {
+  --ink: #000;
+  --paper: #f6f7f5;
+  --glass: rgba(255, 255, 255, 0.08);
+  --glass-line: rgba(255, 255, 255, 0.14);
+  --teal-hi: #2fd3bd;
+  --teal-mid: #0d8f86;
+  --teal-deep: #05343b;
+  --abyss: #021218;
+  --font: "Bricolage Grotesque", "Helvetica Neue", Arial, system-ui, sans-serif;
+}
+
+/* ---------- Hero ---------- */
+.hero-legacy.hero {
+  position: relative;
+  min-height: 100svh;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  isolation: isolate;
+  font-family: var(--font);
+  background: var(--ink);
+  color: var(--paper);
+  -webkit-font-smoothing: antialiased;
+}
+/* NOTE: kept at (0,1,1) on purpose — `.hero-legacy.hero a` (0,2,1) would
+   outrank `.hero-legacy .btn-solid` (0,2,0) and force the solid button's
+   text to inherit paper-on-paper. */
+.hero-legacy a {
+  color: inherit;
+  text-decoration: none;
+}
+
+/* Wave field */
+.hero-legacy .waves {
+  position: absolute;
+  inset: 0;
+  z-index: -2;
+  width: 100%;
+  height: 100%;
+  opacity: 1;
+}
+/* Per-flow entrances: the top sweep drops in from above, the lower ribbon
+   rises from below — then the infinite drifts take over on the inner groups. */
+.hero-legacy .enter-top {
+  opacity: 0;
+  animation: enter-top 1.8s cubic-bezier(0.2, 0.7, 0.2, 1) 0.1s forwards;
+}
+.hero-legacy .enter-bottom {
+  opacity: 0;
+  animation: waves-in 1.8s cubic-bezier(0.2, 0.7, 0.2, 1) 0.1s forwards;
+}
+@keyframes enter-top {
+  from {
+    opacity: 0;
+    transform: translateY(-40px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+.hero-legacy .drift-a {
+  animation: drift-a 22s ease-in-out infinite alternate;
+  transform-origin: 50% 100%;
+}
+.hero-legacy .drift-b {
+  animation: drift-b 29s ease-in-out infinite alternate;
+  transform-origin: 50% 0;
+}
+@keyframes waves-in {
+  from {
+    opacity: 0;
+    transform: translateY(40px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+@keyframes drift-a {
+  from {
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+  to {
+    transform: translate3d(-24px, -18px, 0) scale(1.03);
+  }
+}
+@keyframes drift-b {
+  from {
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+  to {
+    transform: translate3d(18px, 14px, 0) scale(1.04);
+  }
+}
+
+/* Grain: this is what gives the gradient its printed, tactile feel.
+   NOTE: the source file uses mix-blend-mode:overlay, but measured
+   side-by-side (overlay vs normal vs opacity sweeps in headless Chromium)
+   the reference renders as plain white-noise-over-black — overlay is
+   visually inert there. Inside this app's stacking context overlay zeroes
+   the grain out entirely (pure black), so `normal` is used to reproduce
+   the file's exact noisy-gray look at the same .32 opacity. */
+.hero-legacy .grain {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  opacity: 0.32;
+  mix-blend-mode: normal;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='220' height='220'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0 0 0 .9 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+}
+
+/* ---------- Copy ---------- */
+.hero-legacy .content {
+  width: 100%;
+  max-width: 880px;
+  margin: 0 auto;
+  padding: 120px 22px calc(96px + env(safe-area-inset-bottom));
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+.hero-legacy .status {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+  font-weight: 500;
+  color: rgba(246, 247, 245, 0.92);
+  background: rgba(255, 255, 255, 0.07);
+  border: 1px solid var(--glass-line);
+  padding: 7px 14px;
+  border-radius: 999px;
+  margin-bottom: 18px;
+}
+.hero-legacy .status i {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--teal-hi);
+  box-shadow: 0 0 0 3px rgba(47, 211, 189, 0.18);
+}
+.hero-legacy h1 {
+  font-size: clamp(20px, 1.4vw + 15px, 34px);
+  font-weight: 400;
+  line-height: 1.2;
+  letter-spacing: -0.015em;
+  max-width: 26ch;
+  text-wrap: balance;
+}
+.hero-legacy .sub {
+  margin-top: 16px;
+  max-width: 44ch;
+  font-size: clamp(13px, 0.5vw + 11px, 16px);
+  line-height: 1.6;
+  font-weight: 500;
+  color: rgba(246, 247, 245, 0.7);
+  text-wrap: pretty;
+}
+.hero-legacy .actions {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  margin-top: 26px;
+  width: 100%;
+  max-width: 320px;
+}
+/* Mobile: let text length drive size (like desktop row) — Explore stays
+   visibly bigger than Contact instead of both stretching to one width. */
+.hero-legacy .actions .btn-slanted {
+  width: auto;
+  flex: none;
+}
+.hero-legacy .actions .btn-slanted-product {
+  min-height: 44px;
+  padding: 0.55em 1.35em;
+  font-size: 0.9rem;
+}
+.hero-legacy .btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 42px;
+  padding: 0 22px;
+  border-radius: 999px;
+  font: inherit;
+  font-size: 14px;
+  font-weight: 500;
+  transition:
+    transform 0.2s cubic-bezier(0.2, 0.7, 0.2, 1),
+    background 0.2s;
+}
+.hero-legacy .btn:active {
+  transform: scale(0.98);
+}
+.hero-legacy .btn-solid {
+  background: var(--paper);
+  color: var(--ink);
+}
+.hero-legacy .btn-solid:hover {
+  background: #fff;
+}
+.hero-legacy .btn-glass {
+  background: rgba(24, 24, 24, 0.8);
+  color: var(--paper);
+  border: 1px solid var(--glass-line);
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
+}
+.hero-legacy .btn-glass:hover {
+  background: rgba(40, 40, 40, 0.85);
+}
+
+/* One load sequence for the copy, then stillness */
+.hero-legacy .content > * {
+  opacity: 0;
+  transform: translateY(14px);
+  animation: rise 0.8s cubic-bezier(0.2, 0.7, 0.2, 1) forwards;
+}
+.hero-legacy .content > :nth-child(1) {
+  animation-delay: 0.55s;
+}
+.hero-legacy .content > :nth-child(2) {
+  animation-delay: 0.65s;
+}
+.hero-legacy .content > :nth-child(3) {
+  animation-delay: 0.78s;
+}
+.hero-legacy .content > :nth-child(4) {
+  animation-delay: 0.9s;
+}
+@keyframes rise {
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* ---------- Mobile lift + badge tighten ---------- */
+@media (max-width: 859px) {
+  .hero-legacy.hero {
+    justify-content: center;
+  }
+  .hero-legacy .content {
+    padding-top: 110px;
+    padding-bottom: 56px;
+  }
+  .hero-legacy .status {
+    font-size: 11px;
+    padding: 6px 12px;
+    margin-bottom: 14px;
+    max-width: 92vw;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .hero-legacy h1 {
+    font-size: clamp(22px, 6.4vw, 28px);
+  }
+  /* Mobile: pull the cropped top sweep just inside the frame, kept small —
+     a hint of the design, not the full desktop sweep. Bottom ribbon untouched.
+     Uses individual `translate`/`scale` so the enter/drift `transform`
+     animations keep working. */
+  .hero-legacy .enter-top {
+    translate: 310px 0;
+    scale: 0.72;
+    transform-box: fill-box;
+    transform-origin: top left;
+  }
+}
+
+/* ---------- Larger screens ---------- */
+@media (min-width: 860px) {
+  .hero-legacy .content {
+    padding-bottom: 128px;
+  }
+  .hero-legacy .actions {
+    flex-direction: row;
+    max-width: none;
+    width: auto;
+  }
+  .hero-legacy .btn {
+    min-width: 150px;
+    height: 44px;
+    font-size: 15px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-legacy .waves,
+  .hero-legacy .enter-top,
+  .hero-legacy .enter-bottom,
+  .hero-legacy .content > * {
+    animation: none;
+    opacity: 1;
+    transform: none;
+  }
+  .hero-legacy .drift-a,
+  .hero-legacy .drift-b {
+    animation: none;
+  }
+}

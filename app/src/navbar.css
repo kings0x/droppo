@@ -1,0 +1,850 @@
+/* Two-step navbar — rebuilt from the reference interaction (§4).
+   One easing token drives a SEQUENCED open: bar snaps wide → halo blooms →
+   hairline fades → panel unfolds (grid-rows + rise) → links cascade.
+   State: [data-nav-status="active"|"not-active"] on [data-twostep-nav]. */
+
+.twostep-nav {
+  --cubic-default: cubic-bezier(0.625, 0.05, 0, 1);
+  --animation-ease: 0.2s ease;
+  --duration-default: 0.5s;
+  --duration-default-long: 0.75s;
+  --animation-default: var(--duration-default) var(--cubic-default);
+  --animation-default-long: var(--duration-default-long) var(--cubic-default);
+
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  pointer-events: none;
+  color: #f2f2f2;
+}
+
+.twostep-nav__bg {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  width: 100%;
+  height: 100%;
+  background-color: #0000004d;
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: auto;
+  transition:
+    opacity var(--animation-default),
+    visibility var(--animation-default);
+}
+
+[data-twostep-nav][data-nav-status="active"] .twostep-nav__bg {
+  opacity: 1;
+  visibility: visible;
+}
+
+.twostep-nav__wrap {
+  position: absolute;
+  top: 0;
+  left: 0;
+  display: flex;
+  width: 100%;
+  justify-content: center;
+  align-items: stretch;
+}
+
+.twostep-nav__width {
+  display: flex;
+  flex: none;
+  flex-flow: column;
+  justify-content: flex-start;
+  align-items: center;
+  width: 100%;
+  max-width: 80em;
+  padding: 1.5em 1.5em 0;
+}
+
+.twostep-nav__bar {
+  pointer-events: auto;
+  position: relative;
+  overflow: hidden;
+  width: 100%;
+  max-width: 38em;
+  color: #f2f2f2;
+  border-radius: 9999px;
+  transition:
+    max-width var(--duration-default-long) var(--cubic-default) 0.2s,
+    border-radius var(--duration-default-long) var(--cubic-default) 0.2s;
+}
+
+[data-twostep-nav][data-nav-status="active"] .twostep-nav__bar {
+  transition:
+    max-width var(--animation-default) 0s,
+    border-radius var(--animation-default) 0s;
+  border-radius: 1rem;
+  max-width: 100%;
+}
+
+.twostep-nav__back {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  transition: inset var(--animation-default);
+}
+
+[data-twostep-nav][data-nav-status="active"] .twostep-nav__back {
+  inset: -1.25em;
+}
+
+.twostep-nav__back-bg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  background-color: #1a1a1a;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 9999px;
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  transition:
+    background-color var(--animation-ease),
+    border-radius var(--animation-default) 0.2s;
+}
+
+[data-twostep-nav][data-nav-status="active"] .twostep-nav__back-bg {
+  transition:
+    background-color var(--animation-ease),
+    border-radius var(--animation-default) 0s;
+  border-radius: 1rem;
+}
+
+/* ---------- top row ---------- */
+
+.twostep-nav__top {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.85em;
+  width: 100%;
+  height: 4em;
+  padding: 0 1.25em;
+}
+
+.twostep-nav__toggle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.6em;
+  min-height: 44px;
+  padding: 0.5em 1.1em;
+  position: relative;
+  background: #fff;
+  border: 0;
+  border-radius: 999px;
+  color: #000;
+  cursor: pointer;
+  font: inherit;
+  pointer-events: auto;
+  transition:
+    transform 0.2s cubic-bezier(0.2, 0.7, 0.2, 1),
+    background-color 0.2s ease-out;
+}
+
+.twostep-nav__toggle:hover {
+  background: #fff;
+}
+
+.twostep-nav__toggle:active {
+  transform: scale(0.98);
+}
+
+.twostep-nav__toggle-bars {
+  position: relative;
+  display: flex;
+  flex: none;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 2rem;
+  height: 2rem;
+}
+
+.twostep-nav__toggle-bar {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  display: block;
+  width: 1.2rem;
+  height: 0.12rem;
+  border-radius: 999px;
+  background: currentColor;
+  transition: transform var(--animation-default);
+}
+
+/* rest state: two bars stacked */
+.twostep-nav__toggle .twostep-nav__toggle-bar:nth-child(1) {
+  transform: translate(-50%, -50%) translateY(-0.22em);
+}
+.twostep-nav__toggle .twostep-nav__toggle-bar:nth-child(2) {
+  transform: translate(-50%, -50%) translateY(0.22em);
+}
+
+/* hover: bars breathe apart */
+.twostep-nav__toggle:hover .twostep-nav__toggle-bar:nth-child(1) {
+  transform: translate(-50%, -50%) translateY(-0.32em);
+}
+.twostep-nav__toggle:hover .twostep-nav__toggle-bar:nth-child(2) {
+  transform: translate(-50%, -50%) translateY(0.32em);
+}
+
+/* open: morph to X (hover spread suppressed) */
+[data-twostep-nav][data-nav-status="active"]
+  .twostep-nav__toggle
+  .twostep-nav__toggle-bar:nth-child(1),
+[data-twostep-nav][data-nav-status="active"]
+  .twostep-nav__toggle:hover
+  .twostep-nav__toggle-bar:nth-child(1) {
+  transform: translate(-50%, -50%) rotate(45deg);
+}
+[data-twostep-nav][data-nav-status="active"]
+  .twostep-nav__toggle
+  .twostep-nav__toggle-bar:nth-child(2),
+[data-twostep-nav][data-nav-status="active"]
+  .twostep-nav__toggle:hover
+  .twostep-nav__toggle-bar:nth-child(2) {
+  transform: translate(-50%, -50%) rotate(-45deg);
+}
+
+.twostep-nav__menu-text {
+  font-weight: 500;
+  font-size: 0.875rem;
+  line-height: 1;
+  white-space: nowrap;
+}
+
+.twostep-nav__logo {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  justify-self: center;
+  gap: 0.5rem;
+  margin-left: 0;
+  color: inherit;
+  text-decoration: none;
+}
+
+.twostep-nav__logo-img {
+  width: 1.75rem;
+  height: 1.75rem;
+  flex: none;
+  object-fit: contain;
+}
+
+.twostep-nav__logo-word {
+  font-weight: 600;
+  font-size: 1.05rem;
+  letter-spacing: -0.01em;
+}
+
+.twostep-nav__actions {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  justify-self: end;
+}
+
+/* hairline divider that fades in under the top row when open */
+.twostep-nav__top-line {
+  position: absolute;
+  z-index: 2;
+  left: 0.5em;
+  right: 0.5em;
+  bottom: 0;
+  height: 1px;
+  background-color: rgba(255, 255, 255, 0.1);
+  opacity: 0;
+  transition: opacity var(--animation-default) 0s;
+  pointer-events: none;
+}
+
+[data-twostep-nav][data-nav-status="active"] .twostep-nav__top-line {
+  transition: opacity var(--animation-default) 0.1s;
+  opacity: 1;
+}
+
+/* ---------- slanted buttons (language + product tabs) ---------- */
+
+.btn-slanted {
+  --rotate: 20deg;
+  --move: 150%;
+  --btn-slanted-transition-delay-fast: 0s;
+  --btn-slanted-transition-delay-slow: 75ms;
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  border: 0;
+  border-radius: 999px;
+  background-color: rgba(255, 255, 255, 0.04);
+  color: #fff;
+  cursor: pointer;
+  font-family: inherit;
+  font-size: 0.9rem;
+  font-weight: 500;
+  text-decoration: none;
+  white-space: nowrap;
+  transition:
+    background-color 0.3s ease-out,
+    color 0.3s ease-out;
+}
+
+.btn-slanted-nav {
+  padding: 0.5rem 1rem;
+  min-height: 44px;
+}
+
+.btn-slanted-nav .btn-slanted-label {
+  color: inherit;
+}
+
+.btn-slanted:hover,
+.btn-slanted:focus-visible {
+  background-color: #fff;
+  color: #000;
+}
+
+.btn-slanted:hover .btn-slanted-label,
+.btn-slanted:focus-visible .btn-slanted-label {
+  color: #000;
+}
+
+.btn-slanted-label__wrap {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  place-items: center;
+  width: 100%;
+  height: 100%;
+}
+
+.btn-slanted-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375em;
+  white-space: nowrap;
+  transform-origin: 50% 1000%;
+  transition: transform 0.45s cubic-bezier(0.625, 0.05, 0, 1);
+}
+
+.btn-slanted-icon {
+  width: 1.25em;
+  height: 1.25em;
+  flex-shrink: 0;
+}
+
+.btn-slanted-bg {
+  position: absolute;
+  z-index: 0;
+  top: auto;
+  bottom: 0;
+  right: 0;
+  width: 120%;
+  height: 100%;
+  border-radius: inherit;
+  background-color: #fff;
+  transform-origin: 50% 0;
+  transform: rotate(-30deg) translateY(200%);
+  transition: transform 0.45s cubic-bezier(0.625, 0.05, 0, 1);
+}
+
+.btn-slanted-label--opposite {
+  position: absolute;
+  transform: translate(calc(150% * -0.2), calc(150% * 2.5)) rotate(calc(20deg * -2));
+  transition-delay: 0s;
+}
+
+.btn-slanted-label--current {
+  transform: translate(0, 0) rotate(0);
+  transition-delay: 75ms;
+}
+
+.btn-slanted:hover .btn-slanted-bg,
+.btn-slanted:focus-visible .btn-slanted-bg {
+  transform: translate(0) rotate(0);
+}
+
+.btn-slanted:hover .btn-slanted-label--current,
+.btn-slanted:focus-visible .btn-slanted-label--current {
+  transform: translate(calc(150% * 0.2), calc(150% * -2.5)) rotate(calc(20deg * 2));
+  transition-delay: 0s;
+}
+
+.btn-slanted:hover .btn-slanted-label--opposite,
+.btn-slanted:focus-visible .btn-slanted-label--opposite {
+  transform: translate(0, 0) rotate(0);
+  transition-delay: 75ms;
+}
+
+/* product tabs: inactive dark pill, active white pill */
+.btn-slanted-product {
+  min-height: 44px;
+  padding: 0.5em 1.25em;
+  font-size: 0.875rem;
+}
+
+.btn-slanted-product--inactive {
+  background-color: #1a1a1a;
+  color: #fff;
+}
+
+.btn-slanted-product--inactive .btn-slanted-bg {
+  background-color: #fff;
+}
+
+.btn-slanted-product--inactive:hover {
+  background-color: #1a1a1a;
+}
+
+.btn-slanted-product--inactive:hover .btn-slanted-label {
+  color: #000;
+}
+
+.btn-slanted-product--active {
+  background-color: #fff;
+  color: #000;
+}
+
+.btn-slanted-product--active .btn-slanted-label {
+  color: #000;
+}
+
+.btn-slanted-product--active:hover {
+  background-color: #fff;
+}
+
+/* ---------- collapsible menu panel ---------- */
+
+.twostep-nav__bottom {
+  position: relative;
+  display: grid;
+  grid-template-rows: 0fr;
+  width: 100%;
+  min-height: 0;
+  overflow: hidden;
+  transform: translateY(-0.625em);
+  transition:
+    grid-template-rows var(--animation-default) 0s,
+    transform var(--animation-default) 0s;
+}
+
+[data-twostep-nav][data-nav-status="active"] .twostep-nav__bottom {
+  grid-template-rows: 1fr;
+  transform: translateY(0);
+  max-height: calc(100dvh - 7em);
+  transition:
+    grid-template-rows var(--animation-default-long) 0.25s,
+    transform var(--animation-default) 0.25s;
+}
+
+.twostep-nav__bottom-overflow {
+  display: flex;
+  flex-flow: column;
+  justify-content: flex-start;
+  align-items: center;
+  height: 100%;
+  min-height: 0;
+  position: relative;
+  overflow: hidden;
+}
+
+[data-twostep-nav][data-nav-status="active"] .twostep-nav__bottom-overflow {
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  max-height: calc(100dvh - 7em - env(safe-area-inset-top) - env(safe-area-inset-bottom));
+  /* the panel never shows a scrollbar — no track flash mid-animation */
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.twostep-nav__bottom-overflow::-webkit-scrollbar {
+  display: none;
+}
+
+.twostep-nav__bottom-inner {
+  display: flex;
+  flex-flow: column;
+  justify-content: flex-start;
+  align-items: center;
+  width: 100%;
+  padding: 1.5em 2.5em 2.5em;
+  padding-bottom: calc(2.5em + env(safe-area-inset-bottom));
+  position: relative;
+}
+
+.twostep-nav__bottom-row {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr) 1fr;
+  justify-content: flex-start;
+  align-items: start;
+  gap: 2.5em;
+  width: 100%;
+}
+
+@media (max-width: 1023px) {
+  .twostep-nav__bottom-row {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 2em;
+  }
+}
+
+@media (max-width: 639px) {
+  /* Mobile: no expand step — bar is already full-bleed, just drop the panel. */
+  .twostep-nav__bar,
+  [data-twostep-nav][data-nav-status="active"] .twostep-nav__bar {
+    max-width: 100%;
+    border-radius: 1rem;
+    transition: none;
+  }
+  .twostep-nav__back,
+  .twostep-nav__back-bg,
+  [data-twostep-nav][data-nav-status="active"] .twostep-nav__back,
+  [data-twostep-nav][data-nav-status="active"] .twostep-nav__back-bg {
+    transition: none;
+  }
+  /* Pin the backdrop square in both states — otherwise it snaps back to a
+     pill (9999px) the instant close starts while the panel is still sliding
+     up, flashing a circular shape. */
+  .twostep-nav__back-bg,
+  [data-twostep-nav][data-nav-status="active"] .twostep-nav__back-bg {
+    border-radius: 1rem;
+  }
+  [data-twostep-nav][data-nav-status="active"] .twostep-nav__back {
+    inset: 0;
+  }
+  .twostep-nav__top-line {
+    transition: opacity 0.2s ease 0s;
+  }
+  /* Fast drop: no 0.25s wait, short unfold. */
+  .twostep-nav__bottom {
+    transition:
+      grid-template-rows 0.35s cubic-bezier(0.625, 0.05, 0, 1) 0s,
+      transform 0.3s cubic-bezier(0.625, 0.05, 0, 1) 0s;
+  }
+  [data-twostep-nav][data-nav-status="active"] .twostep-nav__bottom {
+    transition:
+      grid-template-rows 0.35s cubic-bezier(0.625, 0.05, 0, 1) 0s,
+      transform 0.3s cubic-bezier(0.625, 0.05, 0, 1) 0s;
+  }
+  /* Fast fade-out on close so links don't linger while the panel slides up. */
+  .twostep-nav__bottom-row > * {
+    transition:
+      opacity 0.2s ease 0s,
+      transform 0.25s cubic-bezier(0.625, 0.05, 0, 1) 0s;
+  }
+  /* Fast cascade: links appear almost immediately. */
+  [data-twostep-nav][data-nav-status="active"] .twostep-nav__bottom-row > * {
+    transition:
+      opacity 0.3s ease 0.05s,
+      transform 0.3s cubic-bezier(0.625, 0.05, 0, 1) 0.05s;
+  }
+  [data-twostep-nav][data-nav-status="active"]
+    .twostep-nav__bottom-row
+    > :nth-child(2) {
+    transition-delay: 0.12s;
+  }
+  /* LAB on top, TEAM below — full-width stacked rows. */
+  .twostep-nav__bottom-row {
+    grid-template-columns: 1fr;
+    gap: 1.5em;
+  }
+  /* Higher specificity than the later base `.twostep-nav__bottom-col`
+     rule (which sets display:flex and would otherwise win on order). */
+  .twostep-nav__bottom-row > .twostep-nav__bottom-col--connect {
+    display: none;
+  }
+  .twostep-nav__bottom-inner {
+    padding-top: 2rem;
+  }
+  .twostep-nav__social-row {
+    justify-content: flex-start;
+    width: 100%;
+  }
+}
+
+.twostep-nav__bottom-col {
+  flex: 1;
+  min-height: 100%;
+  display: flex;
+}
+
+.twostep-nav__section {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75em;
+  width: 100%;
+}
+
+.twostep-nav__section-title {
+  margin-bottom: 0.5em;
+  color: rgba(242, 242, 242, 0.6);
+  font-size: 0.6em;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+
+.twostep-nav__ul {
+  display: flex;
+  flex-flow: column;
+  justify-content: flex-start;
+  align-items: stretch;
+  width: 100%;
+  margin: 0;
+  margin-bottom: 0;
+  padding-left: 0;
+  list-style: none;
+}
+
+.twostep-nav__li {
+  list-style: none;
+}
+
+.twostep-nav__link {
+  display: block;
+  position: relative;
+  width: 100%;
+  padding: 0.45em 0;
+  color: inherit;
+  text-decoration: none;
+  transition: color 0.2s;
+}
+
+.twostep-nav__link:hover .twostep-nav__link-span {
+  color: rgba(242, 242, 242, 0.8);
+}
+
+.twostep-nav__link-span {
+  color: #f2f2f2;
+  font-family: inherit;
+  font-size: 1.3em;
+  font-weight: 400;
+  line-height: 1.2;
+  letter-spacing: -0.04em;
+}
+
+/* cascade reveal on open */
+.twostep-nav__bottom-row > * {
+  transition: all var(--animation-default) 0s;
+  opacity: 0;
+  transform: translateY(2em);
+}
+
+[data-twostep-nav][data-nav-status="active"] .twostep-nav__bottom-row > * {
+  transition: all var(--animation-default-long) 0.5s;
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.twostep-nav__bottom-row > :nth-child(2) {
+  transition-delay: 75ms;
+}
+
+[data-twostep-nav][data-nav-status="active"]
+  .twostep-nav__bottom-row
+  > :nth-child(2) {
+  transition-delay: 0.575s;
+}
+
+/* visual flow tile (desktop only) */
+.twostep-nav__bottom-visual {
+  display: none;
+}
+
+@media (min-width: 1024px) {
+  .twostep-nav__bottom-visual {
+    display: flex;
+  }
+}
+
+.twostep-nav__visual-card {
+  width: 100%;
+  aspect-ratio: 1;
+  border-radius: 0.375em;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  background: linear-gradient(135deg, #03a7ff 0%, #00398f 100%);
+  color: #fff;
+}
+
+.twostep-nav__visual-img {
+  width: 4rem;
+  height: 4rem;
+  object-fit: contain;
+}
+
+.twostep-nav__visual-word {
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  color: rgba(255, 255, 255, 0.9);
+}
+
+/* social icon row */
+.twostep-nav__social-row {
+  display: flex;
+  gap: 0.75em;
+  margin-top: 1.5em;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.twostep-nav__social-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.5em;
+  height: 2.5em;
+  border-radius: 0.5em;
+  background-color: rgba(255, 255, 255, 0.1);
+  color: #f2f2f2;
+  text-decoration: none;
+  transition: all 0.2s;
+}
+
+.twostep-nav__social-icon:hover {
+  background-color: rgba(255, 255, 255, 0.2);
+  transform: translateY(-2px);
+}
+
+.twostep-nav__social-icon svg {
+  width: 1.25rem;
+  height: 1.25rem;
+}
+
+/* discover pill (desktop actions) */
+.twostep-nav__pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  min-height: 44px;
+  padding: 0.5em 1em;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.04);
+  color: #fff;
+  font-size: 0.875rem;
+  font-weight: 500;
+  text-decoration: none;
+  border: 0;
+  cursor: pointer;
+  font-family: inherit;
+  transition: background-color 0.3s ease-out;
+  white-space: nowrap;
+}
+
+.twostep-nav__pill:hover {
+  background: rgba(255, 255, 255, 0.08);
+}
+
+/* ---------- responsive compactions ---------- */
+
+@media (max-width: 639px) {
+  .twostep-nav__pill.twostep-nav__discover {
+    display: none;
+  }
+  .btn-slanted-nav {
+    padding: 0.45rem 0.85rem;
+    font-size: 0.8rem;
+  }
+}
+
+@media (max-width: 520px) {
+  .twostep-nav__width {
+    padding: 0.5em 0.5em 0;
+    padding-top: calc(0.5em + env(safe-area-inset-top));
+  }
+  .twostep-nav__top {
+    height: 3.25rem;
+    min-height: 3.25rem;
+    padding: 0 0.75rem;
+    gap: 0.5rem;
+  }
+  .twostep-nav__toggle {
+    gap: 0.35rem;
+    min-height: 36px;
+    padding: 0.35em 0.85em;
+  }
+  .twostep-nav__toggle-bars {
+    width: 1.4rem;
+    height: 1.4rem;
+  }
+  .twostep-nav__toggle-bar {
+    width: 1rem;
+  }
+  /* Keep the hamburger compact like desktop — same absolute offsets in a
+     smaller box read as spread apart, so tighten them proportionally. */
+  .twostep-nav__toggle .twostep-nav__toggle-bar:nth-child(1) {
+    transform: translate(-50%, -50%) translateY(-0.15em);
+  }
+  .twostep-nav__toggle .twostep-nav__toggle-bar:nth-child(2) {
+    transform: translate(-50%, -50%) translateY(0.15em);
+  }
+  .twostep-nav__toggle:hover .twostep-nav__toggle-bar:nth-child(1) {
+    transform: translate(-50%, -50%) translateY(-0.22em);
+  }
+  .twostep-nav__toggle:hover .twostep-nav__toggle-bar:nth-child(2) {
+    transform: translate(-50%, -50%) translateY(0.22em);
+  }
+  .twostep-nav__menu-text {
+    font-size: 0.8rem;
+  }
+  .twostep-nav__logo-word {
+    font-size: 0.95rem;
+  }
+  .twostep-nav__bottom-inner {
+    padding: 1rem 1.25rem 1.25rem;
+    padding-bottom: calc(1.25rem + env(safe-area-inset-bottom));
+  }
+  .twostep-nav__link-span {
+    font-size: 1.15em;
+  }
+}
+
+@media (max-width: 389px) {
+  /* Mobile stays a 1rem sheet in both states — no pill snap on close. */
+  .twostep-nav__bar,
+  [data-twostep-nav][data-nav-status="active"] .twostep-nav__bar {
+    border-radius: 1rem;
+  }
+}
+
+/* ---------- focus + reduced motion ---------- */
+
+.twostep-nav__toggle:focus-visible,
+.twostep-nav__link:focus-visible,
+.twostep-nav__social-icon:focus-visible,
+.twostep-nav__pill:focus-visible {
+  outline: 2px solid var(--color-flow-hi);
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .twostep-nav__bar,
+  .twostep-nav__back,
+  .twostep-nav__back-bg,
+  .twostep-nav__bottom,
+  .twostep-nav__bottom-row > *,
+  .twostep-nav__top-line,
+  .twostep-nav__toggle-bar,
+  .btn-slanted-bg,
+  .btn-slanted-label {
+    transition: none !important;
+  }
+  [data-twostep-nav] .twostep-nav__bottom-row > * {
+    opacity: 1;
+    transform: none;
+  }
+  .twostep-nav__bottom {
+    transform: none;
+  }
+}
