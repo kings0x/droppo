@@ -123,7 +123,7 @@ export interface Member {
 export const TEAM: Member[] = [
   {
     name: "Justice Uzoigwe",
-    role: "UI/UX & Founder",
+    role: "Blockchain Researcher & Founder",
     img: "/team/member-beanie.webp",
     pos: "50% 20%",
     links: [
