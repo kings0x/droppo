@@ -84,6 +84,7 @@ export const PROJECTS: Project[] = [
     ctaLabel: "Explore Seidar",
     mark: "S",
     href: "#products",
+    image: "/products/seidar-hero.webp",
   },
   {
     slug: "releeve",
