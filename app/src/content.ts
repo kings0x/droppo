@@ -78,13 +78,13 @@ export const PROJECTS: Project[] = [
     tagline: "DeFi automation for Stellar.",
     tags: ["DeFi", "Automation", "Stellar"],
     description:
-      "Seidar brings DeFi protocols, strategies, and automation together in one platform — giving users a simpler way to manage positions and execute on-chain strategies across Stellar.",
+      "seidar is a platform that unifies and brings together defi protocols across stellar for the sole purpose of making both human and agentic discovery, interaction and execution across stellar defi protocols seamless end to end.",
     status: "active",
     statusLabel: "Active project",
     ctaLabel: "Explore Seidar",
     mark: "S",
     href: "#products",
-    image: "/products/seidar-hero.webp",
+    image: "/products/seidar-hero.jpg",
   },
   {
     slug: "releeve",
