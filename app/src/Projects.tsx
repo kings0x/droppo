@@ -36,22 +36,6 @@ function WideCard({ p }: { p: Project }) {
       )}
       <div className="flex flex-1 flex-col p-6 sm:p-8">
         <div className="flex items-center gap-3">
-          {p.slug === "releeve" ? (
-            <svg viewBox="0 0 32 32" className="h-7 w-7 flex-none" aria-hidden="true">
-              <rect x="2" y="2" width="28" height="28" rx="7" fill="none" stroke="rgba(255,255,255,.35)" strokeWidth="1.5" />
-              <text x="16" y="16" dy=".35em" textAnchor="middle" fontSize="15" fontWeight="500" fill="#fff" fontFamily="inherit">
-                R
-              </text>
-            </svg>
-          ) : (
-            <span
-              className="flex h-9 w-9 items-center justify-center rounded-full text-xl font-bold text-black"
-              style={{ background: "#fff" }}
-              aria-hidden="true"
-            >
-              {p.mark}
-            </span>
-          )}
           <h3 className="text-2xl font-normal tracking-[-0.015em] text-white">{p.name}</h3>
           <span
             className={`ml-auto inline-flex flex-none items-center gap-1.5 whitespace-nowrap rounded-full border px-3 py-1 text-[11px] font-medium ${
