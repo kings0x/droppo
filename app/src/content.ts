@@ -83,7 +83,8 @@ export const PROJECTS: Project[] = [
     statusLabel: "Active project",
     ctaLabel: "Explore Seidar",
     mark: "S",
-    href: "#products",
+    href: "https://seidar.xyz/",
+    external: true,
     image: "/products/seidar-hero.jpg",
   },
   {
