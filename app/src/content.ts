@@ -90,10 +90,10 @@ export const PROJECTS: Project[] = [
   {
     slug: "releeve",
     name: "Releeve",
-    tagline: "Simulation and observability for Stellar developers.",
+    tagline: "Your own copy of Stellar mainnet, plus eyes on production.",
     tags: ["DevTools", "Soroban", "Testing"],
     description:
-      "Releeve gives protocols and developers the infrastructure to simulate transactions, reproduce network state, and debug execution — so teams can see exactly what happens before and after changes reach the network.",
+      "Releeve forks real Stellar state into a persistent network your team controls. You can set balances, storage, TTL and ledger time, act as any account without its keys, and run your protocol against the conditions it will actually face. Once you ship, Releeve watches mainnet and alerts you with the full execution context when something you care about happens.",
     status: "in-development",
     statusLabel: "In progress",
     ctaLabel: "Explore Releeve",
@@ -198,7 +198,7 @@ export const FAQS: Faq[] = [
   },
   {
     q: "What are you building right now?",
-    a: "Seidar (DeFi automation for Stellar) is our active project. Releeve (simulation and observability tooling for developers) is in development. The products section above always reflects the current state of the lab.",
+    a: "Seidar (DeFi automation for Stellar) is our active project. Releeve (forked Stellar networks and production monitoring for protocol teams) is in development. The products section above always reflects the current state of the lab.",
   },
   {
     q: "Do you work with external teams?",

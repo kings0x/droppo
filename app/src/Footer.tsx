@@ -18,7 +18,7 @@ const COMMUNITY_LINKS = [
 ];
 
 const PROJECT_LINKS = [
-  { label: "Seidar", href: "#products" },
+  { label: "Seidar", href: "https://seidar.xyz/", external: true },
   { label: "Releeve", href: "https://releeve.xyz/", external: true },
 ];
 
